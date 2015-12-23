@@ -25,9 +25,11 @@ executable wai-accept-language-exe
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , wai-accept-language
-                     , file-embed
                      , text
+                     , bytestring
+                     , word8
                      , http-types
+                     , file-embed
                      , warp
                      , wai
                      , wai-extra
