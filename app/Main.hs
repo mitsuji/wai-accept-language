@@ -18,6 +18,7 @@ import Network.Wai.Parse(parseHttpAccept)
 import Data.Text.Encoding(decodeLatin1)
 import Data.Maybe(fromMaybe)
 import Data.List(find)
+import qualified Data.Text as T
 import qualified Data.ByteString as BS
 import Data.Word8(_hyphen)
 
@@ -28,22 +29,33 @@ main = do
     Warp.setHost (fromString host) $
     Warp.setPort (read port) $
     Warp.defaultSettings
-    ) $ (rewriteByAcceptLanguage ["en","ja"]) $ staticHttpApp
+    ) $ (rewriteByAcceptLanguage [
+            (["index.htm"],["en","ja"])
+            ,(["sub","sub.htm"],["en","ja"])
+            ]) $ staticHttpApp
+  
 
 
-
-rewriteByAcceptLanguage :: [BS.ByteString] -> Wai.Middleware
-rewriteByAcceptLanguage prepared = rewritePure trans
+rewriteByAcceptLanguage :: [([T.Text],[BS.ByteString])] -> Wai.Middleware
+rewriteByAcceptLanguage prepareds = rewritePure trans
   where
+    
     trans path headers =
       let path' = do
+            prepared <- lookup path prepareds
             header <- lookup hAcceptLanguage headers
             let requested = map takeWhileNotHyphen $ parseHttpAccept header
             language <- find (\ca -> elem ca prepared) requested
-            return $ decodeLatin1 language : path
+            return $ init path ++ [insertLanguage (last path) language]
       in fromMaybe path path'
+         
     takeWhileNotHyphen = BS.takeWhile (_hyphen /=)
-
+    
+    insertLanguage fn l =
+      let
+        elems  = T.splitOn "." fn
+        elems' = init elems ++ [decodeLatin1 l] ++ [last elems]
+      in T.intercalate "." elems'
 
 
 staticHttpApp :: Wai.Application
