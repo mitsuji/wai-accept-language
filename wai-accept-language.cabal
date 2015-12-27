@@ -1,5 +1,5 @@
 name:                wai-accept-language
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Rewrite based on Accept-Language header
 description:         Please see README.md
 homepage:            https://github.com/mitsuji/wai-accept-language
