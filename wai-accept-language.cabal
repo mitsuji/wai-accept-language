@@ -10,7 +10,12 @@ maintainer:          tkms@mitsuji.org
 --copyright:           2010 Author Here
 category:            Web
 build-type:          Simple
--- extra-source-files:
+extra-source-files:  static/index.htm
+                   , static/sub/sub.htm
+                   , static/en/index.htm
+                   , static/en/sub/sub.htm
+                   , static/ja/index.htm
+                   , static/ja/sub/sub.htm
 cabal-version:       >=1.10
 
 library
